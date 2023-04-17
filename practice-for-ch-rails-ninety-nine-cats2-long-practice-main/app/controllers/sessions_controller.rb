@@ -1,5 +1,8 @@
 class SessionsController < ApplicationController
-    # before_action :require_logged_out: [:new, :create]
+
+    before_action :require_logged_out, only: [:new, :create]
+    before_action :require_logged_in, only: [:destroy]
+
     def new
         @user = User.new
         render :new #brings us to login page. sessions persist until you're logged out. so when we're logging in, we're also generating a new session (token) until logout
