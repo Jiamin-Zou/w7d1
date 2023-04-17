@@ -27,13 +27,14 @@ class User < ApplicationRecord
     def generate_unique_session_token
         loop do
             session_token = SecureRandom::urlsafe_base64
-            return session_token unless User.exist?(session_token: session_token)
+            return session_token unless User.exists?(session_token: session_token)
         end
     end
 
     def reset_session_token!
         self.session_token = generate_unique_session_token
         self.save!
+        self.session_token
     end
 
     private

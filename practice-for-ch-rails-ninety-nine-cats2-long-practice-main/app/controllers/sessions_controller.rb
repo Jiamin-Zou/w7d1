@@ -1,4 +1,5 @@
 class SessionsController < ApplicationController
+    # before_action :require_logged_out: [:new, :create]
     def new
         @user = User.new
         render :new #brings us to login page. sessions persist until you're logged out. so when we're logging in, we're also generating a new session (token) until logout
@@ -11,8 +12,7 @@ class SessionsController < ApplicationController
         @user = User.find_by_credentials(username, password)
 
         if @user
-            session_token = @user.reset_session_token!
-            session[:session_token] = session_token
+            login!(@user)
             #this is just login!(@user)
             redirect_to cats_url
         else
@@ -22,6 +22,10 @@ class SessionsController < ApplicationController
     end
 
     def destroy
+        current_user.reset_session_token! if logged_in?
+        session[:session_token] = nil
+        @current_user = nil
 
+        redirect_to new_session_url
     end
 end
